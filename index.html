@@ -512,6 +512,25 @@
   var rosterBody = document.getElementById('rosterBody');
   var rosterCount = document.getElementById('rosterCount');
 
+  // Track class checkboxes in the order they were selected, not DOM order
+  var classOrder = [];
+  var classCheckboxes = form.querySelectorAll('input[name="classes"]');
+  classCheckboxes.forEach(function(el) {
+    el.addEventListener('change', function() {
+      var idx = classOrder.indexOf(this.value);
+      if (this.checked) {
+        if (idx === -1) classOrder.push(this.value);
+      } else if (idx !== -1) {
+        classOrder.splice(idx, 1);
+      }
+    });
+  });
+
+  function orderedSelectedClasses() {
+    var checkedValues = Array.from(classCheckboxes).filter(function(el) { return el.checked; }).map(function(el) { return el.value; });
+    return classOrder.filter(function(v) { return checkedValues.indexOf(v) !== -1; });
+  }
+
   // Faction radio → principled modal (only on real user clicks)
   var factionRadios = form.querySelectorAll('input[name="faction"]');
   factionRadios.forEach(function(radio) {
@@ -549,6 +568,7 @@
     form.querySelectorAll('input[name="classes"]').forEach(function(el) {
       el.checked = classValues.indexOf(el.value) !== -1;
     });
+    classOrder = classValues.slice();
     if (entry.faction === 'Альянс' || entry.faction === 'Орда') {
       principledValue = !!entry.principled;
       principledAnsweredFor = entry.faction;
@@ -648,7 +668,7 @@
     var factionEl = form.querySelector('input[name="faction"]:checked');
     var modeChecks = Array.from(form.querySelectorAll('input[name="mode"]:checked'));
     var mode = modeChecks.map(function(el) { return el.value; }).join(' + ');
-    var classes = Array.from(form.querySelectorAll('input[name="classes"]:checked')).map(function(el) { return el.value; });
+    var classes = orderedSelectedClasses();
     var principled = (factionEl && principledAnsweredFor === factionEl.value) ? principledValue : false;
 
     if (!nick) { showMsg('err', 'Вкажи свій нік.'); nickInput.focus(); return; }
@@ -668,6 +688,7 @@
       renderRoster();
       showMsg('ok', wasUpdate ? 'Дані оновлено!' : 'Ласкаво, тебе додано до списку!');
       form.reset();
+      classOrder = [];
       principledValue = false;
       principledAnsweredFor = null;
       submitBtn.textContent = 'Зареєструватись';
