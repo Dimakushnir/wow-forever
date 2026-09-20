@@ -411,7 +411,7 @@
   };
 
   window.sbUpsertPlayer = async function(entry) {
-    var res = await fetch(SUPABASE_URL + '/rest/v1/players', {
+    var res = await fetch(SUPABASE_URL + '/rest/v1/players?on_conflict=nick', {
       method: 'POST',
       headers: sbHeaders({ 'Prefer': 'resolution=merge-duplicates,return=representation' }),
       body: JSON.stringify(entry)
