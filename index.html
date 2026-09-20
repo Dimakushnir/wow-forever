@@ -1,0 +1,747 @@
+<title>WoW Forever — Реєстрація гравців</title>
+<style>
+  :root {
+    --gold: #c9a24a;
+    --gold-bright: #e8c977;
+    --bg: #12100d;
+    --bg-panel: #1b1712;
+    --bg-panel-2: #221c15;
+    --border: #3a3021;
+    --text: #ece3d0;
+    --text-dim: #a89a7d;
+    --alliance: #3b6bc9;
+    --alliance-bg: rgba(59,107,201,0.12);
+    --horde: #b0332b;
+    --horde-bg: rgba(176,51,43,0.12);
+    --pvp: #b0332b;
+    --pve: #3f8f5f;
+    --danger: #c0453d;
+    --shadow: rgba(0,0,0,0.45);
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  :root:not([data-theme="light"]) { color-scheme: dark; }
+  :root[data-theme="light"] {
+    --bg: #f3ede0; --bg-panel: #fffaf0; --bg-panel-2: #f7efdc;
+    --border: #ddcfa8; --text: #2b2416; --text-dim: #6b5e42;
+    --shadow: rgba(120,100,60,0.18); color-scheme: light;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f3ede0; --bg-panel: #fffaf0; --bg-panel-2: #f7efdc;
+      --border: #ddcfa8; --text: #2b2416; --text-dim: #6b5e42;
+      --shadow: rgba(120,100,60,0.18); color-scheme: light;
+    }
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    min-height: 100%;
+  }
+  body {
+    background-image:
+      radial-gradient(ellipse at top, rgba(201,162,74,0.10), transparent 55%),
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 2px, transparent 2px, transparent 6px);
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 32px 18px 60px; }
+  header.top { text-align: center; margin-bottom: 28px; }
+  header.top .crest { font-size: 40px; line-height: 1; margin-bottom: 6px; filter: drop-shadow(0 2px 6px var(--shadow)); }
+  h1 {
+    font-family: Georgia, 'Palatino Linotype', Palatino, serif;
+    font-weight: 800; letter-spacing: 1px;
+    font-size: clamp(26px, 5vw, 38px); margin: 0 0 6px;
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  header.top p { margin: 0; color: var(--text-dim); font-size: 15px; }
+  .panel {
+    background: linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
+    border: 1px solid var(--border); border-radius: 16px; padding: 24px;
+    box-shadow: 0 10px 30px var(--shadow); margin-bottom: 24px;
+  }
+  .panel h2 {
+    font-family: Georgia, 'Palatino Linotype', Palatino, serif;
+    font-size: 18px; margin: 0 0 18px; color: var(--gold-bright);
+    letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;
+  }
+  .countdown-panel { text-align: center; }
+  .countdown-panel h2 { justify-content: center; }
+  .countdown { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .cd-unit {
+    display: flex; flex-direction: column; align-items: center; min-width: 62px;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px 6px 10px;
+  }
+  .cd-num {
+    font-family: Georgia, 'Palatino Linotype', Palatino, serif;
+    font-weight: 800; font-size: clamp(24px, 6vw, 34px); line-height: 1;
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    font-variant-numeric: tabular-nums;
+  }
+  .cd-label { margin-top: 6px; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text-dim); font-weight: 700; }
+  .cd-sep { font-family: Georgia, serif; font-size: 24px; color: var(--gold); font-weight: 800; padding-bottom: 20px; }
+  .countdown-note { margin-top: 14px; font-size: 12.5px; color: var(--text-dim); line-height: 1.5; }
+  #localLaunchTime { color: var(--gold-bright); }
+  label.field { display: block; margin-bottom: 18px; }
+  label.field > span.lbl { display: block; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-dim); margin-bottom: 8px; }
+  .lbl-hint { text-transform: none; font-weight: 600; letter-spacing: 0; color: var(--gold-bright); font-size: 12px; margin-left: 6px; }
+  .field-hint { margin-top: 8px; font-size: 12px; color: var(--text-dim); font-style: italic; }
+  input[type="text"] {
+    width: 100%; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text); font-size: 15px; font-family: inherit;
+    outline: none; transition: border-color 0.15s ease;
+  }
+  input[type="text"]:focus { border-color: var(--gold); }
+  .class-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+  .class-pick { position: relative; display: block; cursor: pointer; }
+  .class-pick input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; margin: 0; }
+  .class-pick .card {
+    display: block; text-align: center; border: 1.5px solid rgba(var(--accent-rgb), 0.4);
+    border-radius: 10px; padding: 12px 8px; font-weight: 700; font-size: clamp(13px, 3.2vw, 14px);
+    color: var(--accent); background: rgba(var(--accent-rgb), 0.08); transition: all 0.15s ease;
+  }
+  .class-pick:hover .card { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.16); transform: translateY(-1px); }
+  .class-pick input:checked + .card { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.24); box-shadow: 0 0 0 1px var(--accent) inset; font-weight: 800; }
+  .icon, .icon-slot { display: inline-flex; align-items: center; justify-content: center; vertical-align: -3px; }
+  .icon svg, .icon-slot svg { width: 15px; height: 15px; display: block; }
+  .choice-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .choice-row.choice-row-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .choice { position: relative; display: block; cursor: pointer; }
+  .choice input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; margin: 0; }
+  .choice .card { border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 10px; text-align: center; font-weight: 700; font-size: clamp(13px, 3.2vw, 14px); color: var(--text-dim); transition: all 0.15s ease; background: var(--bg); }
+  .choice:hover .card { border-color: var(--gold); background: rgba(201,162,74,0.08); transform: translateY(-1px); }
+  .choice input:checked + .card { color: var(--text); border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold) inset; }
+  .choice[data-kind="alliance"] input:checked + .card { color: var(--alliance); background: var(--alliance-bg); border-color: var(--alliance); box-shadow: 0 0 0 1px var(--alliance) inset; }
+  .choice[data-kind="horde"] input:checked + .card { color: var(--horde); background: var(--horde-bg); border-color: var(--horde); box-shadow: 0 0 0 1px var(--horde) inset; }
+  .choice[data-kind="neutral"] input:checked + .card { color: var(--gold-bright); background: rgba(201,162,74,0.14); border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold) inset; }
+  .choice[data-kind="pvp"] input:checked + .card { color: var(--pvp); background: rgba(176,51,43,0.12); border-color: var(--pvp); box-shadow: 0 0 0 1px var(--pvp) inset; }
+  .choice[data-kind="pve"] input:checked + .card { color: var(--pve); background: rgba(63,143,95,0.12); border-color: var(--pve); box-shadow: 0 0 0 1px var(--pve) inset; }
+  button.submit {
+    width: 100%; margin-top: 16px; padding: 15px 14px; border: none; border-radius: 10px;
+    font-family: Georgia, 'Palatino Linotype', Palatino, serif; font-weight: 700;
+    font-size: clamp(16px, 3.8vw, 18px); letter-spacing: 0.4px; color: #1a1508;
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold)); cursor: pointer;
+    box-shadow: 0 6px 16px rgba(201,162,74,0.25); transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  button.submit:hover:not(:disabled) { filter: brightness(1.08); box-shadow: 0 8px 20px rgba(201,162,74,0.35); transform: translateY(-1px); }
+  button.submit:active { transform: translateY(1px); }
+  button.submit:disabled { opacity: 0.55; cursor: not-allowed; }
+  .row-delete { border: none; background: transparent; color: var(--text-dim); font-size: 17px; cursor: pointer; padding: 6px 9px; border-radius: 8px; line-height: 1; transition: all 0.15s ease; }
+  .row-delete:hover { color: var(--danger); background: rgba(192,69,61,0.12); }
+  .row-delete:disabled { opacity: 0.4; cursor: not-allowed; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 1000; }
+  .modal-overlay[hidden] { display: none; }
+  .modal-box { width: 100%; max-width: 340px; background: linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2)); border: 1px solid var(--border); border-radius: 16px; padding: 22px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+  .modal-box h3 { margin: 0 0 10px; font-family: Georgia, serif; font-size: 17px; color: var(--gold-bright); }
+  .modal-box p { margin: 0 0 18px; font-size: 14px; color: var(--text-dim); line-height: 1.5; }
+  .modal-actions { display: flex; gap: 10px; }
+  .modal-btn { flex: 1; padding: 12px 10px; border-radius: 10px; font-weight: 700; font-size: 14.5px; font-family: inherit; cursor: pointer; border: 1px solid var(--border); background: var(--bg); color: var(--text); transition: all 0.15s ease; }
+  .modal-btn.cancel:hover { border-color: var(--gold); }
+  .modal-btn.danger { border-color: var(--danger); color: #fff; background: var(--danger); }
+  .modal-btn.danger:hover { filter: brightness(1.08); }
+  .modal-btn.gold { border-color: var(--gold); color: #1a1508; background: linear-gradient(180deg, var(--gold-bright), var(--gold)); font-family: Georgia, serif; }
+  .modal-btn.gold:hover { filter: brightness(1.05); }
+  .modal-btn.flex { border-color: var(--pve); color: var(--pve); background: transparent; }
+  .modal-btn.flex:hover { background: rgba(63,143,95,0.12); }
+  .modal-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .msg { margin-top: 12px; font-size: 13.5px; padding: 10px 12px; border-radius: 8px; display: none; }
+  .msg.show { display: block; }
+  .msg.ok { background: rgba(63,143,95,0.15); color: #7fce9e; border: 1px solid rgba(63,143,95,0.4); }
+  .msg.err { background: rgba(192,69,61,0.15); color: #e79890; border: 1px solid rgba(192,69,61,0.4); }
+  .msg.info { background: rgba(201,162,74,0.12); color: var(--gold-bright); border: 1px solid rgba(201,162,74,0.35); }
+  .faction-stats { margin-bottom: 16px; }
+  .faction-stats .stat-row { display: flex; justify-content: space-between; font-size: 13.5px; font-weight: 700; margin-bottom: 8px; }
+  .faction-stats .stat-alliance { color: var(--alliance); }
+  .faction-stats .stat-horde { color: var(--horde); }
+  .faction-stats .stat-bar { display: flex; height: 9px; border-radius: 999px; overflow: hidden; background: var(--bg); border: 1px solid var(--border); }
+  .faction-stats .stat-bar-fill { height: 100%; transition: width 0.2s ease; }
+  .faction-stats .stat-bar-fill.alliance { background: var(--alliance); }
+  .faction-stats .stat-bar-fill.horde { background: var(--horde); }
+  .faction-stats .stat-hint { margin-top: 6px; font-size: 11.5px; color: var(--text-dim); font-style: italic; }
+  .roster-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .roster-count { font-size: 13px; color: var(--text-dim); font-weight: 600; }
+  .table-scroll { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; min-width: 520px; font-size: 14px; }
+  thead th { text-align: left; font-family: Georgia, serif; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--gold-bright); background: var(--bg); padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text); white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(odd) { background: rgba(255,255,255,0.015); }
+  .pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 999px; font-size: 12.5px; font-weight: 700; }
+  .pill.alliance { color: var(--alliance); background: var(--alliance-bg); }
+  .pill.horde { color: var(--horde); background: var(--horde-bg); }
+  .pill.neutral { color: var(--gold-bright); background: rgba(201,162,74,0.14); }
+  .pill.pvp { color: var(--pvp); background: rgba(176,51,43,0.12); }
+  .pill.pve { color: var(--pve); background: rgba(63,143,95,0.12); }
+  .pill.both { color: var(--gold-bright); background: rgba(201,162,74,0.14); }
+  .agree-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 700; white-space: nowrap; }
+  .class-tag { font-weight: 700; }
+  .agree-badge.yes { color: var(--gold-bright); }
+  .agree-badge.no { color: var(--pve); }
+  .empty-row { text-align: center; color: var(--text-dim); padding: 22px 10px !important; font-style: italic; }
+  footer.note { text-align: center; color: var(--text-dim); font-size: 12.5px; margin-top: 18px; }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="crest">⚔️🛡️</div>
+    <h1>WoW Forever</h1>
+    <p>Реєстрація потенційних гравців — залиш свої дані, щоб тебе враховували при формуванні складу</p>
+  </header>
+
+  <div class="panel countdown-panel">
+    <h2>⏳ До запуску World of Warcraft: Forever</h2>
+    <div class="countdown" id="countdown">
+      <div class="cd-unit"><span class="cd-num" id="cdDays">45</span><span class="cd-label">днів</span></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><span class="cd-num" id="cdHours">19</span><span class="cd-label">год</span></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><span class="cd-num" id="cdMinutes">17</span><span class="cd-label">хв</span></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit"><span class="cd-num" id="cdSeconds">54</span><span class="cd-label">сек</span></div>
+    </div>
+    <div class="countdown-note" id="countdownNote">
+      Старт: 4 листопада 2026, 15:00 (тихоокеанський час) — за офіційним анонсом Blizzard на BlizzCon 2026
+      <span id="localLaunchWrap"> · у вашому часовому поясі: <strong id="localLaunchTime"></strong></span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>📋 Анкета гравця</h2>
+    <form id="signupForm" autocomplete="off">
+      <label class="field">
+        <span class="lbl">Нік в Дискорді</span>
+        <input type="text" id="nickInput" placeholder="Нік в Дискорді" maxlength="40" autocomplete="off" required>
+        <div class="field-hint">Вже реєструвався(-лася)? Введи той самий нік — форма підвантажить твій вибір, і ти зможеш його змінити</div>
+      </label>
+
+      <label class="field">
+        <span class="lbl">Фракція, якій надаєш перевагу</span>
+        <div class="choice-row choice-row-3">
+          <label class="choice" data-kind="alliance">
+            <input type="radio" name="faction" value="Альянс" id="factionAlliance">
+            <div class="card"><span class="icon-slot" data-icon="alliance"></span> Альянс</div>
+          </label>
+          <label class="choice" data-kind="horde">
+            <input type="radio" name="faction" value="Орда" id="factionHorde">
+            <div class="card"><span class="icon-slot" data-icon="horde"></span> Орда</div>
+          </label>
+          <label class="choice" data-kind="neutral">
+            <input type="radio" name="faction" value="Без різниці" id="factionNeutral">
+            <div class="card">🤷 Без різниці</div>
+          </label>
+        </div>
+      </label>
+
+      <label class="field">
+        <span class="lbl">Напрямок гри <span class="lbl-hint">💡 можна обрати обидва</span></span>
+        <div class="choice-row">
+          <label class="choice" data-kind="pvp">
+            <input type="checkbox" name="mode" value="PvP" id="modePvp">
+            <div class="card">⚔️ PvP</div>
+          </label>
+          <label class="choice" data-kind="pve">
+            <input type="checkbox" name="mode" value="PvE" id="modePve">
+            <div class="card">🐉 PvE</div>
+          </label>
+        </div>
+      </label>
+
+      <label class="field">
+        <span class="lbl">Клас, за який хочеш грати <span class="lbl-hint">💡 можна обрати кілька</span></span>
+        <div class="class-grid" id="classGrid">
+          <label class="class-pick" style="--accent:#C79C6E;--accent-rgb:199,156,110;">
+            <input type="checkbox" name="classes" value="Warrior">
+            <span class="card">Warrior</span>
+          </label>
+          <label class="class-pick" style="--accent:#F58CBA;--accent-rgb:245,140,186;">
+            <input type="checkbox" name="classes" value="Paladin">
+            <span class="card">Paladin</span>
+          </label>
+          <label class="class-pick" style="--accent:#ABD473;--accent-rgb:171,212,117;">
+            <input type="checkbox" name="classes" value="Hunter">
+            <span class="card">Hunter</span>
+          </label>
+          <label class="class-pick" style="--accent:#FFF569;--accent-rgb:255,245,105;">
+            <input type="checkbox" name="classes" value="Rogue">
+            <span class="card">Rogue</span>
+          </label>
+          <label class="class-pick" style="--accent:#F4F4F4;--accent-rgb:244,244,244;">
+            <input type="checkbox" name="classes" value="Priest">
+            <span class="card">Priest</span>
+          </label>
+          <label class="class-pick" style="--accent:#0070DE;--accent-rgb:0,112,222;">
+            <input type="checkbox" name="classes" value="Shaman">
+            <span class="card">Shaman</span>
+          </label>
+          <label class="class-pick" style="--accent:#69CCF0;--accent-rgb:105,204,240;">
+            <input type="checkbox" name="classes" value="Mage">
+            <span class="card">Mage</span>
+          </label>
+          <label class="class-pick" style="--accent:#9482C9;--accent-rgb:148,130,201;">
+            <input type="checkbox" name="classes" value="Warlock">
+            <span class="card">Warlock</span>
+          </label>
+          <label class="class-pick" style="--accent:#FF7D0A;--accent-rgb:255,125,10;">
+            <input type="checkbox" name="classes" value="Druid">
+            <span class="card">Druid</span>
+          </label>
+        </div>
+      </label>
+
+      <button type="submit" class="submit" id="submitBtn">Зареєструватись</button>
+      <div class="msg" id="formMsg"></div>
+    </form>
+  </div>
+
+  <div class="panel">
+    <div class="roster-head">
+      <h2 style="margin-bottom:0">🛡️ Список зареєстрованих</h2>
+      <span class="roster-count" id="rosterCount"></span>
+    </div>
+    <div style="height:14px"></div>
+    <div class="faction-stats" id="factionStats"></div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Нік</th>
+            <th>Фракція</th>
+            <th>Принципово</th>
+            <th>Напрямок</th>
+            <th>Клас</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="rosterBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer class="note">WoW Forever · дані зберігаються тут відвідувачами сторінки</footer>
+</div>
+
+<div class="modal-overlay" id="confirmModal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+    <h3 id="confirmModalTitle">Видалити запис?</h3>
+    <p id="confirmModalText"></p>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn cancel" id="confirmCancelBtn">Скасувати</button>
+      <button type="button" class="modal-btn danger" id="confirmDeleteBtn">Видалити</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="principledAskModal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="principledAskTitle">
+    <h3 id="principledAskTitle">Це принципове рішення?</h3>
+    <p id="principledAskText"></p>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn flex" id="principledNoBtn">🤝 Готовий(а) змінити</button>
+      <button type="button" class="modal-btn gold" id="principledYesBtn">⚔️ Так, принципово</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  // Старт: 4 листопада 2026, 15:00 PST (UTC-8) = 23:00 UTC
+  var LAUNCH_UTC_MS = Date.UTC(2026, 10, 4, 23, 0, 0);
+  var daysEl = document.getElementById('cdDays');
+  var hoursEl = document.getElementById('cdHours');
+  var minEl = document.getElementById('cdMinutes');
+  var secEl = document.getElementById('cdSeconds');
+  var noteEl = document.getElementById('countdownNote');
+  var localEl = document.getElementById('localLaunchTime');
+  var localWrap = document.getElementById('localLaunchWrap');
+
+  function pad(n) { return n < 10 ? '0' + n : String(n); }
+
+  try {
+    localEl.textContent = new Date(LAUNCH_UTC_MS).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+  } catch(e) {
+    if (localWrap) localWrap.style.display = 'none';
+  }
+
+  var timer = null;
+  function tick() {
+    var diff = LAUNCH_UTC_MS - Date.now();
+    if (diff <= 0) {
+      daysEl.textContent = '0';
+      hoursEl.textContent = '00';
+      minEl.textContent = '00';
+      secEl.textContent = '00';
+      noteEl.innerHTML = '🎮 World of Warcraft: Forever вже запущено!';
+      if (timer) clearInterval(timer);
+      return;
+    }
+    var totalSec = Math.floor(diff / 1000);
+    daysEl.textContent = Math.floor(totalSec / 86400);
+    hoursEl.textContent = pad(Math.floor((totalSec % 86400) / 3600));
+    minEl.textContent = pad(Math.floor((totalSec % 3600) / 60));
+    secEl.textContent = pad(totalSec % 60);
+  }
+  tick();
+  timer = setInterval(tick, 1000);
+})();
+</script>
+
+<script>
+(function () {
+  var SUPABASE_URL = 'https://tppeemhlgewfaogqlxop.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_-oFN3hGUf547RSpJ-RsJFg_30O75KEP';
+
+  function sbHeaders(extra) {
+    return Object.assign({
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json'
+    }, extra || {});
+  }
+
+  window.sbFetchPlayers = async function() {
+    var res = await fetch(SUPABASE_URL + '/rest/v1/players?select=*&order=ts.asc', {
+      headers: sbHeaders()
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  };
+
+  window.sbUpsertPlayer = async function(entry) {
+    var res = await fetch(SUPABASE_URL + '/rest/v1/players', {
+      method: 'POST',
+      headers: sbHeaders({ 'Prefer': 'resolution=merge-duplicates,return=representation' }),
+      body: JSON.stringify(entry)
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  };
+
+  window.sbDeletePlayer = async function(nick) {
+    var res = await fetch(SUPABASE_URL + '/rest/v1/players?nick=eq.' + encodeURIComponent(nick), {
+      method: 'DELETE',
+      headers: sbHeaders({ 'Prefer': 'return=minimal' })
+    });
+    if (!res.ok) throw new Error(await res.text());
+  };
+})();
+</script>
+
+<script>
+(function () {
+  var ICONS = {
+    alliance: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3z"/><path d="M12 9l1 2 2 .3-1.5 1.4.3 2-1.8-1-1.8 1 .3-2L9 11.3 11 11l1-2z"/></svg>',
+    horde: '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M4 20c0-8 4-14 6-16 1 6-2 10-2 16H4z"/><path d="M20 20c0-8-4-14-6-16-1 6 2 10 2 16h4z"/></svg>'
+  };
+
+  var CLASS_COLORS = {
+    Warrior: '#C79C6E', Paladin: '#F58CBA', Hunter: '#ABD473', Rogue: '#FFF569',
+    Priest: '#F4F4F4', Shaman: '#0070DE', Mage: '#69CCF0', Warlock: '#9482C9', Druid: '#FF7D0A'
+  };
+
+  document.querySelectorAll('[data-icon]').forEach(function(el) {
+    var key = el.getAttribute('data-icon');
+    if (ICONS[key]) el.innerHTML = ICONS[key];
+  });
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, function(c) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+    });
+  }
+
+  function classTag(name) {
+    var color = CLASS_COLORS[name] || 'var(--text)';
+    return '<span class="class-tag" style="color:' + color + '">' + escapeHtml(name) + '</span>';
+  }
+
+  function iconHtml(key) {
+    return '<span class="icon">' + (ICONS[key] || '') + '</span>';
+  }
+
+  // Principled-choice modal state
+  var principledValue = false;
+  var principledAnsweredFor = null;
+  var principledAskingFor = null;
+
+  var principledAskModal = document.getElementById('principledAskModal');
+  var principledAskText = document.getElementById('principledAskText');
+  var principledYesBtn = document.getElementById('principledYesBtn');
+  var principledNoBtn = document.getElementById('principledNoBtn');
+
+  function openPrincipledAsk(factionValue) {
+    principledAskingFor = factionValue;
+    var icon = factionValue === 'Альянс' ? '🔵' : '🔴';
+    principledAskText.textContent =
+      'Ти обрав(ла) ' + icon + ' ' + factionValue + '. Це принципове рішення — важливо грати саме за цю фракцію, чи ти готовий(а) змінити її заради балансу команди? Твоя відповідь буде видно в таблиці.';
+    principledAskModal.hidden = false;
+  }
+
+  function closePrincipledAsk() {
+    principledAskModal.hidden = true;
+    principledAskingFor = null;
+  }
+
+  principledYesBtn.addEventListener('click', function() {
+    principledValue = true;
+    principledAnsweredFor = principledAskingFor;
+    closePrincipledAsk();
+  });
+
+  principledNoBtn.addEventListener('click', function() {
+    principledValue = false;
+    principledAnsweredFor = principledAskingFor;
+    closePrincipledAsk();
+  });
+
+  principledAskModal.addEventListener('click', function(e) {
+    if (e.target === principledAskModal) closePrincipledAsk();
+  });
+
+  var players = [];
+
+  var form = document.getElementById('signupForm');
+  var nickInput = document.getElementById('nickInput');
+  var submitBtn = document.getElementById('submitBtn');
+  var msgEl = document.getElementById('formMsg');
+  var rosterBody = document.getElementById('rosterBody');
+  var rosterCount = document.getElementById('rosterCount');
+
+  // Faction radio → principled modal (only on real user clicks)
+  var factionRadios = form.querySelectorAll('input[name="faction"]');
+  factionRadios.forEach(function(radio) {
+    radio.addEventListener('click', function(e) {
+      if (!e.isTrusted) return;
+      if (this.value === 'Альянс' || this.value === 'Орда') {
+        openPrincipledAsk(this.value);
+      } else {
+        principledValue = false;
+        principledAnsweredFor = null;
+      }
+    });
+  });
+
+  function showMsg(type, text) {
+    msgEl.className = 'msg show ' + type;
+    msgEl.textContent = text;
+  }
+
+  function findPlayer(nick) {
+    var n = (nick || '').trim().toLowerCase();
+    if (!n) return null;
+    return players.find(function(p) { return p.nick.toLowerCase() === n; }) || null;
+  }
+
+  function populateFormFromEntry(entry) {
+    form.querySelectorAll('input[name="faction"]').forEach(function(el) {
+      el.checked = el.value === entry.faction;
+    });
+    var modeValues = (entry.mode || '').split(' + ');
+    form.querySelectorAll('input[name="mode"]').forEach(function(el) {
+      el.checked = modeValues.indexOf(el.value) !== -1;
+    });
+    var classValues = Array.isArray(entry.classes) ? entry.classes : [];
+    form.querySelectorAll('input[name="classes"]').forEach(function(el) {
+      el.checked = classValues.indexOf(el.value) !== -1;
+    });
+    if (entry.faction === 'Альянс' || entry.faction === 'Орда') {
+      principledValue = !!entry.principled;
+      principledAnsweredFor = entry.faction;
+    } else {
+      principledValue = false;
+      principledAnsweredFor = null;
+    }
+  }
+
+  function checkExistingNick() {
+    var existing = findPlayer(nickInput.value);
+    if (existing) {
+      populateFormFromEntry(existing);
+      submitBtn.textContent = 'Оновити мій вибір';
+      showMsg('info', 'Знайшли твій попередній запис — зміни вибір і онови його кнопкою нижче.');
+    } else {
+      submitBtn.textContent = 'Зареєструватись';
+    }
+  }
+
+  nickInput.addEventListener('blur', checkExistingNick);
+  nickInput.addEventListener('input', function() {
+    if (!findPlayer(nickInput.value)) submitBtn.textContent = 'Зареєструватись';
+  });
+
+
+  function renderFactionStats() {
+    var aligned = players.filter(function(p) { return p.faction === 'Альянс' || p.faction === 'Орда'; });
+    var neutralCount = players.filter(function(p) { return p.faction === 'Без різниці'; }).length;
+    var allianceBase = aligned.filter(function(p) { return p.faction === 'Альянс'; }).length;
+    var hordeBase = aligned.filter(function(p) { return p.faction === 'Орда'; }).length;
+    var allianceCount = allianceBase + neutralCount;
+    var hordeCount = hordeBase + neutralCount;
+    var total = allianceCount + hordeCount;
+    var alliancePct = total ? (allianceCount / total * 100) : 50;
+    var hordePct = 100 - alliancePct;
+    var firmCount = aligned.filter(function(p) { return p.principled; }).length;
+    var flexibleCount = aligned.length - firmCount;
+    var statsEl = document.getElementById('factionStats');
+    if (!statsEl) return;
+    statsEl.innerHTML =
+      '<div class="stat-row">' +
+        '<span class="stat-alliance">' + iconHtml('alliance') + ' Альянс: <strong>' + allianceCount + '</strong></span>' +
+        '<span class="stat-horde">Орда: <strong>' + hordeCount + '</strong> ' + iconHtml('horde') + '</span>' +
+      '</div>' +
+      '<div class="stat-bar">' +
+        '<div class="stat-bar-fill alliance" style="width:' + alliancePct + '%"></div>' +
+        '<div class="stat-bar-fill horde" style="width:' + hordePct + '%"></div>' +
+      '</div>' +
+      '<div class="stat-hint">' +
+        (neutralCount
+          ? 'Кожен гравець «Без різниці» (' + neutralCount + ') додає +1 і Альянсу, і Орді'
+          : 'Ніхто ще не обрав «Без різниці»') +
+        (aligned.length ? ' · 🤝 гнучких: ' + flexibleCount + ' · ⚔️ принципових: ' + firmCount : '') +
+      '</div>';
+  }
+
+  function renderRoster() {
+    var count = players.length;
+    rosterCount.textContent = count + (count === 1 ? ' гравець' : ' гравців');
+    renderFactionStats();
+    if (!count) {
+      rosterBody.innerHTML = '<tr><td class="empty-row" colspan="6">Поки що ніхто не зареєструвався — будь першим!</td></tr>';
+      return;
+    }
+    rosterBody.innerHTML = players.slice().reverse().map(function(p) {
+      var factionClass = p.faction === 'Альянс' ? 'alliance' : (p.faction === 'Орда' ? 'horde' : 'neutral');
+      var factionIcon = p.faction === 'Альянс' ? iconHtml('alliance') : (p.faction === 'Орда' ? iconHtml('horde') : '🤷');
+      var modeArr = (p.mode || '').split(' + ');
+      var modeClass = modeArr.length > 1 ? 'both' : (p.mode === 'PvP' ? 'pvp' : 'pve');
+      var modeIcon = modeArr.length > 1 ? '⚔️🐉' : (p.mode === 'PvP' ? '⚔️' : '🐉');
+      var classes = Array.isArray(p.classes) ? p.classes : [];
+      var classCell = classes.length
+        ? classes.map(classTag).join(', ')
+        : '<span style="color:var(--text-dim)">—</span>';
+      var principledCell = p.faction === 'Без різниці'
+        ? '<span class="agree-badge no" title="Байдуже до фракції">🤝 Ні</span>'
+        : (p.principled
+          ? '<span class="agree-badge yes" title="Принципово хоче грати за цю фракцію">⚔️ Так</span>'
+          : '<span class="agree-badge no" title="Готовий(а) змінити фракцію заради балансу">🤝 Ні</span>');
+      return '<tr>' +
+        '<td><strong>' + escapeHtml(p.nick) + '</strong></td>' +
+        '<td><span class="pill ' + factionClass + '">' + factionIcon + ' ' + escapeHtml(p.faction) + '</span></td>' +
+        '<td>' + principledCell + '</td>' +
+        '<td><span class="pill ' + modeClass + '">' + modeIcon + ' ' + escapeHtml(p.mode) + '</span></td>' +
+        '<td>' + classCell + '</td>' +
+        '<td><button type="button" class="row-delete" data-nick="' + escapeHtml(p.nick) + '" title="Видалити цей запис">🗑️</button></td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    msgEl.className = 'msg';
+
+    var nick = nickInput.value.trim();
+    var factionEl = form.querySelector('input[name="faction"]:checked');
+    var modeChecks = Array.from(form.querySelectorAll('input[name="mode"]:checked'));
+    var mode = modeChecks.map(function(el) { return el.value; }).join(' + ');
+    var classes = Array.from(form.querySelectorAll('input[name="classes"]:checked')).map(function(el) { return el.value; });
+    var principled = (factionEl && principledAnsweredFor === factionEl.value) ? principledValue : false;
+
+    if (!nick) { showMsg('err', 'Вкажи свій нік.'); nickInput.focus(); return; }
+    if (!factionEl) { showMsg('err', 'Обери фракцію: Альянс, Орда або Без різниці.'); return; }
+    if (!mode) { showMsg('err', 'Обери напрямок: PvP, PvE або обидва.'); return; }
+    if (!classes.length) { showMsg('err', 'Обери хоча б один клас.'); return; }
+
+    var wasUpdate = !!findPlayer(nick);
+    var entry = { nick: nick, faction: factionEl.value, mode: mode, classes: classes, principled: principled, ts: Date.now() };
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Збереження…';
+
+    try {
+      await window.sbUpsertPlayer(entry);
+      players = await window.sbFetchPlayers();
+      renderRoster();
+      showMsg('ok', wasUpdate ? 'Дані оновлено!' : 'Ласкаво, тебе додано до списку!');
+      form.reset();
+      principledValue = false;
+      principledAnsweredFor = null;
+      submitBtn.textContent = 'Зареєструватись';
+    } catch(err) {
+      showMsg('err', 'Помилка збереження: ' + err.message);
+    }
+
+    submitBtn.disabled = false;
+  });
+
+  // Delete modal
+  var confirmModal = document.getElementById('confirmModal');
+  var confirmModalText = document.getElementById('confirmModalText');
+  var confirmCancelBtn = document.getElementById('confirmCancelBtn');
+  var confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+  var pendingDeleteNick = null;
+
+  rosterBody.addEventListener('click', function(e) {
+    var btn = e.target.closest('.row-delete');
+    if (!btn) return;
+    var nick = btn.getAttribute('data-nick');
+    var existing = findPlayer(nick);
+    if (!existing) return;
+    pendingDeleteNick = existing.nick;
+    confirmModalText.textContent = 'Точно видалити запис «' + existing.nick + '»? Цю дію не можна скасувати.';
+    confirmModal.hidden = false;
+  });
+
+  function closeConfirmModal() {
+    confirmModal.hidden = true;
+    pendingDeleteNick = null;
+    confirmDeleteBtn.disabled = false;
+    confirmDeleteBtn.textContent = 'Видалити';
+  }
+
+  confirmCancelBtn.addEventListener('click', closeConfirmModal);
+  confirmModal.addEventListener('click', function(e) {
+    if (e.target === confirmModal) closeConfirmModal();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      if (!confirmModal.hidden) closeConfirmModal();
+      if (!principledAskModal.hidden) closePrincipledAsk();
+    }
+  });
+
+  confirmDeleteBtn.addEventListener('click', async function() {
+    var existing = findPlayer(pendingDeleteNick);
+    if (!existing) { closeConfirmModal(); return; }
+
+    confirmDeleteBtn.disabled = true;
+    confirmDeleteBtn.textContent = 'Видалення…';
+
+    try {
+      await window.sbDeletePlayer(existing.nick);
+      players = await window.sbFetchPlayers();
+      renderRoster();
+      showMsg('ok', 'Запис видалено.');
+    } catch(err) {
+      showMsg('err', 'Помилка видалення: ' + err.message);
+    }
+
+    closeConfirmModal();
+  });
+
+  async function init() {
+    try {
+      players = await window.sbFetchPlayers();
+      renderRoster();
+    } catch(err) {
+      showMsg('err', 'Не вдалось завантажити список: ' + err.message);
+      renderRoster();
+    }
+  }
+
+  init();
+})();
+</script>
