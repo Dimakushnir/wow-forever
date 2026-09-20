@@ -321,6 +321,11 @@
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
     <h3 id="confirmModalTitle">Видалити запис?</h3>
     <p id="confirmModalText"></p>
+    <label class="field" style="margin-bottom:14px">
+      <span class="lbl">Пароль адміна</span>
+      <input type="password" id="confirmDeletePassword" placeholder="Пароль" autocomplete="off">
+    </label>
+    <div class="msg" id="confirmDeleteMsg"></div>
     <div class="modal-actions">
       <button type="button" class="modal-btn cancel" id="confirmCancelBtn">Скасувати</button>
       <button type="button" class="modal-btn danger" id="confirmDeleteBtn">Видалити</button>
@@ -413,12 +418,16 @@
     return res.json();
   };
 
-  window.sbDeletePlayer = async function(nick) {
-    var res = await fetch(SUPABASE_URL + '/rest/v1/players?nick=eq.' + encodeURIComponent(nick), {
-      method: 'DELETE',
-      headers: sbHeaders({ 'Prefer': 'return=minimal' })
+  window.sbDeletePlayer = async function(nick, password) {
+    var res = await fetch(SUPABASE_URL + '/rest/v1/rpc/admin_delete_player', {
+      method: 'POST',
+      headers: sbHeaders(),
+      body: JSON.stringify({ p_nick: nick, p_password: password })
     });
-    if (!res.ok) throw new Error(await res.text());
+    if (!res.ok) {
+      var body = await res.json().catch(function() { return null; });
+      throw new Error(body && body.message === 'invalid password' ? 'Невірний пароль.' : (body ? body.message : res.statusText));
+    }
   };
 })();
 </script>
@@ -672,6 +681,8 @@
   // Delete modal
   var confirmModal = document.getElementById('confirmModal');
   var confirmModalText = document.getElementById('confirmModalText');
+  var confirmDeletePassword = document.getElementById('confirmDeletePassword');
+  var confirmDeleteMsg = document.getElementById('confirmDeleteMsg');
   var confirmCancelBtn = document.getElementById('confirmCancelBtn');
   var confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
   var pendingDeleteNick = null;
@@ -684,12 +695,17 @@
     if (!existing) return;
     pendingDeleteNick = existing.nick;
     confirmModalText.textContent = 'Точно видалити запис «' + existing.nick + '»? Цю дію не можна скасувати.';
+    confirmDeletePassword.value = '';
+    confirmDeleteMsg.className = 'msg';
     confirmModal.hidden = false;
+    confirmDeletePassword.focus();
   });
 
   function closeConfirmModal() {
     confirmModal.hidden = true;
     pendingDeleteNick = null;
+    confirmDeletePassword.value = '';
+    confirmDeleteMsg.className = 'msg';
     confirmDeleteBtn.disabled = false;
     confirmDeleteBtn.textContent = 'Видалити';
   }
@@ -710,19 +726,30 @@
     var existing = findPlayer(pendingDeleteNick);
     if (!existing) { closeConfirmModal(); return; }
 
+    var password = confirmDeletePassword.value;
+    if (!password) {
+      confirmDeleteMsg.className = 'msg show err';
+      confirmDeleteMsg.textContent = 'Введи пароль адміна.';
+      confirmDeletePassword.focus();
+      return;
+    }
+
     confirmDeleteBtn.disabled = true;
     confirmDeleteBtn.textContent = 'Видалення…';
+    confirmDeleteMsg.className = 'msg';
 
     try {
-      await window.sbDeletePlayer(existing.nick);
+      await window.sbDeletePlayer(existing.nick, password);
       players = await window.sbFetchPlayers();
       renderRoster();
       showMsg('ok', 'Запис видалено.');
+      closeConfirmModal();
     } catch(err) {
-      showMsg('err', 'Помилка видалення: ' + err.message);
+      confirmDeleteMsg.className = 'msg show err';
+      confirmDeleteMsg.textContent = err.message;
+      confirmDeleteBtn.disabled = false;
+      confirmDeleteBtn.textContent = 'Видалити';
     }
-
-    closeConfirmModal();
   });
 
   async function init() {
