@@ -127,12 +127,12 @@
   .mode-toggle-label[data-active-when="off"] { color: var(--text); opacity: 1; }
   .mode-toggle:has(input:checked) .mode-toggle-label[data-active-when="off"] { color: var(--text-dim); opacity: 0.55; }
   .mode-toggle:has(input:checked) .mode-toggle-label[data-active-when="on"] { color: var(--pvp); opacity: 1; }
-  .switch { position: relative; display: inline-block; width: 46px; height: 26px; cursor: pointer; flex-shrink: 0; }
+  .switch { position: relative; display: inline-block; width: 64px; height: 32px; cursor: pointer; flex-shrink: 0; }
   .switch input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; margin: 0; }
   .switch-track { position: absolute; inset: 0; background: var(--bg); border: 1px solid var(--border); border-radius: 999px; transition: all 0.15s ease; }
-  .switch-thumb { position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: var(--text-dim); transition: all 0.15s ease; }
+  .switch-thumb { position: absolute; top: 2px; left: 2px; width: 26px; height: 26px; border-radius: 50%; background: var(--text-dim); transition: all 0.15s ease; }
   .switch input:checked + .switch-track { background: rgba(201,122,61,0.2); border-color: var(--pvp); }
-  .switch input:checked + .switch-track .switch-thumb { transform: translateX(20px); background: var(--pvp); }
+  .switch input:checked + .switch-track .switch-thumb { transform: translateX(32px); background: var(--pvp); }
   .switch input:focus-visible + .switch-track { box-shadow: 0 0 0 2px var(--gold); }
   button.submit {
     width: 100%; margin-top: 16px; padding: 15px 14px; border: none; border-radius: 10px;
