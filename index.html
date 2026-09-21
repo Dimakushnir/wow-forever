@@ -113,11 +113,13 @@
   .icon, .icon-slot { display: inline-flex; align-items: center; justify-content: center; vertical-align: -3px; }
   .icon svg, .icon-slot svg { width: 15px; height: 15px; display: block; }
   .icon img, .icon-slot img { width: 17px; height: 17px; display: block; border-radius: 50%; }
+  .choice .icon-slot img { width: 56px; height: 56px; }
+  .choice .icon-slot svg { width: 46px; height: 46px; }
   .choice-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .choice-row.choice-row-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .choice-row.choice-row-3 { grid-template-columns: repeat(3, minmax(0, 120px)); justify-content: center; }
   .choice { position: relative; display: block; cursor: pointer; }
   .choice input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; margin: 0; }
-  .choice .card { border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 10px; text-align: center; font-weight: 700; font-size: clamp(13px, 3.2vw, 14px); color: var(--text-dim); transition: all 0.15s ease; background: var(--bg); }
+  .choice .card { border: 1.5px solid var(--border); border-radius: 14px; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: clamp(13px, 3.2vw, 14px); color: var(--text-dim); transition: all 0.15s ease; background: var(--bg); }
   .choice:hover .card { border-color: var(--gold); background: rgba(201,162,74,0.08); transform: translateY(-1px); }
   .choice input:checked + .card { color: var(--text); border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold) inset; }
   .choice[data-kind="alliance"] input:checked + .card { color: var(--alliance); background: var(--alliance-bg); border-color: var(--alliance); box-shadow: 0 0 0 1px var(--alliance) inset; }
@@ -261,15 +263,15 @@
         <div class="choice-row choice-row-3">
           <label class="choice" data-kind="alliance">
             <input type="radio" name="faction" value="Альянс" id="factionAlliance">
-            <div class="card"><span class="icon-slot" data-icon="alliance"></span> Альянс</div>
+            <div class="card"><span class="icon-slot" data-icon="alliance"></span></div>
           </label>
           <label class="choice" data-kind="horde">
             <input type="radio" name="faction" value="Орда" id="factionHorde">
-            <div class="card"><span class="icon-slot" data-icon="horde"></span> Орда</div>
+            <div class="card"><span class="icon-slot" data-icon="horde"></span></div>
           </label>
           <label class="choice" data-kind="neutral">
             <input type="radio" name="faction" value="Без різниці" id="factionNeutral">
-            <div class="card"><span class="icon-slot" data-icon="neutral"></span> Без різниці</div>
+            <div class="card"><span class="icon-slot" data-icon="neutral"></span></div>
           </label>
         </div>
       </label>
