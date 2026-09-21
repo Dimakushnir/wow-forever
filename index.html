@@ -122,8 +122,18 @@
   .choice[data-kind="alliance"] input:checked + .card { color: var(--alliance); background: var(--alliance-bg); border-color: var(--alliance); box-shadow: 0 0 0 1px var(--alliance) inset; }
   .choice[data-kind="horde"] input:checked + .card { color: var(--horde); background: var(--horde-bg); border-color: var(--horde); box-shadow: 0 0 0 1px var(--horde) inset; }
   .choice[data-kind="neutral"] input:checked + .card { color: var(--gold-bright); background: rgba(201,162,74,0.14); border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold) inset; }
-  .choice[data-kind="pvp"] input:checked + .card { color: var(--pvp); background: rgba(201,122,61,0.14); border-color: var(--pvp); box-shadow: 0 0 0 1px var(--pvp) inset; }
-  .choice[data-kind="pve"] input:checked + .card { color: var(--pve); background: rgba(63,143,95,0.12); border-color: var(--pve); box-shadow: 0 0 0 1px var(--pve) inset; }
+  .mode-toggle { display: flex; align-items: center; justify-content: center; gap: 14px; }
+  .mode-toggle-label { font-size: 13.5px; font-weight: 700; color: var(--text-dim); opacity: 0.55; transition: all 0.15s ease; }
+  .mode-toggle-label[data-active-when="off"] { color: var(--text); opacity: 1; }
+  .mode-toggle:has(input:checked) .mode-toggle-label[data-active-when="off"] { color: var(--text-dim); opacity: 0.55; }
+  .mode-toggle:has(input:checked) .mode-toggle-label[data-active-when="on"] { color: var(--pvp); opacity: 1; }
+  .switch { position: relative; display: inline-block; width: 46px; height: 26px; cursor: pointer; flex-shrink: 0; }
+  .switch input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; margin: 0; }
+  .switch-track { position: absolute; inset: 0; background: var(--bg); border: 1px solid var(--border); border-radius: 999px; transition: all 0.15s ease; }
+  .switch-thumb { position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: var(--text-dim); transition: all 0.15s ease; }
+  .switch input:checked + .switch-track { background: rgba(201,122,61,0.2); border-color: var(--pvp); }
+  .switch input:checked + .switch-track .switch-thumb { transform: translateX(20px); background: var(--pvp); }
+  .switch input:focus-visible + .switch-track { box-shadow: 0 0 0 2px var(--gold); }
   button.submit {
     width: 100%; margin-top: 16px; padding: 15px 14px; border: none; border-radius: 10px;
     font-family: Georgia, 'Palatino Linotype', Palatino, serif; font-weight: 700;
@@ -265,11 +275,15 @@
 
       <label class="field">
         <span class="lbl">Напрямок гри</span>
-        <label class="choice" data-kind="pvp" style="display:block">
-          <input type="checkbox" name="mode" value="PvP" id="modePvp">
-          <div class="card" style="text-align:left">Цікавить також PvP?</div>
-        </label>
-        <div class="field-hint">Гільдія орієнтована переважно на PvE — це вже враховано, тут відзначаєш лише інтерес до PvP</div>
+        <div class="mode-toggle">
+          <span class="mode-toggle-label" data-active-when="off">Тільки PvE</span>
+          <label class="switch">
+            <input type="checkbox" name="mode" value="PvP" id="modePvp">
+            <span class="switch-track"><span class="switch-thumb"></span></span>
+          </label>
+          <span class="mode-toggle-label" data-active-when="on">+ PvP</span>
+        </div>
+        <div class="field-hint" style="text-align:center">Гільдія орієнтована переважно на PvE — тут можна додатково відзначити інтерес до PvP</div>
       </label>
 
       <label class="field">
