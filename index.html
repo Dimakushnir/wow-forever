@@ -244,11 +244,11 @@
         <div class="choice-row">
           <label class="choice" data-kind="pvp">
             <input type="checkbox" name="mode" value="PvP" id="modePvp">
-            <div class="card">⚔️ PvP</div>
+            <div class="card">PvP</div>
           </label>
           <label class="choice" data-kind="pve">
             <input type="checkbox" name="mode" value="PvE" id="modePve">
-            <div class="card">🐉 PvE</div>
+            <div class="card">PvE</div>
           </label>
         </div>
       </label>
@@ -650,7 +650,6 @@
       var factionIcon = p.faction === 'Альянс' ? iconHtml('alliance') : (p.faction === 'Орда' ? iconHtml('horde') : '🤷');
       var modeArr = (p.mode || '').split(' + ');
       var modeClass = modeArr.length > 1 ? 'both' : (p.mode === 'PvP' ? 'pvp' : 'pve');
-      var modeIcon = modeArr.length > 1 ? '🐉⚔️' : (p.mode === 'PvP' ? '⚔️' : '🐉');
       var classes = Array.isArray(p.classes) ? p.classes : [];
       var classCell = classes.length
         ? classes.map(classTag).join(', ')
@@ -664,7 +663,7 @@
         '<td><strong>' + escapeHtml(p.nick) + '</strong></td>' +
         '<td><span class="pill ' + factionClass + '">' + factionIcon + ' ' + escapeHtml(p.faction) + '</span></td>' +
         '<td>' + principledCell + '</td>' +
-        '<td><span class="pill ' + modeClass + '">' + modeIcon + ' ' + escapeHtml(p.mode) + '</span></td>' +
+        '<td><span class="pill ' + modeClass + '">' + escapeHtml(p.mode) + '</span></td>' +
         '<td>' + classCell + '</td>' +
         '<td><button type="button" class="row-delete" data-nick="' + escapeHtml(p.nick) + '" title="Видалити цей запис">🗑️</button></td>' +
         '</tr>';
