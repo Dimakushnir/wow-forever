@@ -264,17 +264,12 @@
       </label>
 
       <label class="field">
-        <span class="lbl">Напрямок гри <span class="lbl-hint">💡 можна обрати обидва</span></span>
-        <div class="choice-row">
-          <label class="choice" data-kind="pvp">
-            <input type="checkbox" name="mode" value="PvP" id="modePvp">
-            <div class="card">PvP</div>
-          </label>
-          <label class="choice" data-kind="pve">
-            <input type="checkbox" name="mode" value="PvE" id="modePve">
-            <div class="card">PvE</div>
-          </label>
-        </div>
+        <span class="lbl">Напрямок гри</span>
+        <label class="choice" data-kind="pvp" style="display:block">
+          <input type="checkbox" name="mode" value="PvP" id="modePvp">
+          <div class="card" style="text-align:left">Цікавить також PvP?</div>
+        </label>
+        <div class="field-hint">Гільдія орієнтована переважно на PvE — це вже враховано, тут відзначаєш лише інтерес до PvP</div>
       </label>
 
       <label class="field">
@@ -703,17 +698,13 @@
 
     var nick = nickInput.value.trim();
     var factionEl = form.querySelector('input[name="faction"]:checked');
-    var MODE_ORDER = ['PvE', 'PvP'];
-    var modeChecks = Array.from(form.querySelectorAll('input[name="mode"]:checked'));
-    var mode = modeChecks.map(function(el) { return el.value; })
-      .sort(function(a, b) { return MODE_ORDER.indexOf(a) - MODE_ORDER.indexOf(b); })
-      .join(' + ');
+    var wantsPvp = form.querySelector('input[name="mode"][value="PvP"]').checked;
+    var mode = wantsPvp ? 'PvE + PvP' : 'PvE';
     var classes = orderedSelectedClasses();
     var principled = (factionEl && principledAnsweredFor === factionEl.value) ? principledValue : false;
 
     if (!nick) { showMsg('err', 'Вкажи свій нік.'); nickInput.focus(); return; }
     if (!factionEl) { showMsg('err', 'Обери фракцію: Альянс, Орда або Без різниці.'); return; }
-    if (!mode) { showMsg('err', 'Обери напрямок: PvP, PvE або обидва.'); return; }
     if (!classes.length) { showMsg('err', 'Обери хоча б один клас.'); return; }
 
     var wasUpdate = !!findPlayer(nick);
