@@ -648,8 +648,10 @@
     rosterBody.innerHTML = players.slice().reverse().map(function(p) {
       var factionClass = p.faction === 'Альянс' ? 'alliance' : (p.faction === 'Орда' ? 'horde' : 'neutral');
       var factionIcon = p.faction === 'Альянс' ? iconHtml('alliance') : (p.faction === 'Орда' ? iconHtml('horde') : '🤷');
-      var modeArr = (p.mode || '').split(' + ');
-      var modeClass = modeArr.length > 1 ? 'both' : (p.mode === 'PvP' ? 'pvp' : 'pve');
+      var MODE_ORDER = ['PvE', 'PvP'];
+      var modeArr = (p.mode || '').split(' + ').sort(function(a, b) { return MODE_ORDER.indexOf(a) - MODE_ORDER.indexOf(b); });
+      var modeText = modeArr.join(' + ');
+      var modeClass = modeArr.length > 1 ? 'both' : (modeArr[0] === 'PvP' ? 'pvp' : 'pve');
       var classes = Array.isArray(p.classes) ? p.classes : [];
       var classCell = classes.length
         ? classes.map(classTag).join(', ')
@@ -663,7 +665,7 @@
         '<td><strong>' + escapeHtml(p.nick) + '</strong></td>' +
         '<td><span class="pill ' + factionClass + '">' + factionIcon + ' ' + escapeHtml(p.faction) + '</span></td>' +
         '<td>' + principledCell + '</td>' +
-        '<td><span class="pill ' + modeClass + '">' + escapeHtml(p.mode) + '</span></td>' +
+        '<td><span class="pill ' + modeClass + '">' + escapeHtml(modeText) + '</span></td>' +
         '<td>' + classCell + '</td>' +
         '<td><button type="button" class="row-delete" data-nick="' + escapeHtml(p.nick) + '" title="Видалити цей запис">🗑️</button></td>' +
         '</tr>';
