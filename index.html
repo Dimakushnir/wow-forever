@@ -296,7 +296,7 @@
         <div class="field-hint">Класи в списку нижче показуються в тому порядку, в якому ти їх обираєш — перший обраний буде першим</div>
       </label>
 
-      <button type="submit" class="submit" id="submitBtn">Зареєструватись</button>
+      <button type="submit" class="submit" id="submitBtn">Відправити</button>
       <div class="msg" id="formMsg"></div>
     </form>
   </div>
@@ -596,13 +596,13 @@
       submitBtn.textContent = 'Оновити мій вибір';
       showMsg('info', 'Знайшли твій попередній запис — зміни вибір і онови його кнопкою нижче.');
     } else {
-      submitBtn.textContent = 'Зареєструватись';
+      submitBtn.textContent = 'Відправити';
     }
   }
 
   nickInput.addEventListener('blur', checkExistingNick);
   nickInput.addEventListener('input', function() {
-    if (!findPlayer(nickInput.value)) submitBtn.textContent = 'Зареєструватись';
+    if (!findPlayer(nickInput.value)) submitBtn.textContent = 'Відправити';
   });
 
 
@@ -650,7 +650,7 @@
       var factionIcon = p.faction === 'Альянс' ? iconHtml('alliance') : (p.faction === 'Орда' ? iconHtml('horde') : '🤷');
       var modeArr = (p.mode || '').split(' + ');
       var modeClass = modeArr.length > 1 ? 'both' : (p.mode === 'PvP' ? 'pvp' : 'pve');
-      var modeIcon = modeArr.length > 1 ? '⚔️🐉' : (p.mode === 'PvP' ? '⚔️' : '🐉');
+      var modeIcon = modeArr.length > 1 ? '🐉⚔️' : (p.mode === 'PvP' ? '⚔️' : '🐉');
       var classes = Array.isArray(p.classes) ? p.classes : [];
       var classCell = classes.length
         ? classes.map(classTag).join(', ')
@@ -677,8 +677,11 @@
 
     var nick = nickInput.value.trim();
     var factionEl = form.querySelector('input[name="faction"]:checked');
+    var MODE_ORDER = ['PvE', 'PvP'];
     var modeChecks = Array.from(form.querySelectorAll('input[name="mode"]:checked'));
-    var mode = modeChecks.map(function(el) { return el.value; }).join(' + ');
+    var mode = modeChecks.map(function(el) { return el.value; })
+      .sort(function(a, b) { return MODE_ORDER.indexOf(a) - MODE_ORDER.indexOf(b); })
+      .join(' + ');
     var classes = orderedSelectedClasses();
     var principled = (factionEl && principledAnsweredFor === factionEl.value) ? principledValue : false;
 
@@ -702,7 +705,7 @@
       classOrder = [];
       principledValue = false;
       principledAnsweredFor = null;
-      submitBtn.textContent = 'Зареєструватись';
+      submitBtn.textContent = 'Відправити';
     } catch(err) {
       showMsg('err', 'Помилка збереження: ' + err.message);
     }
