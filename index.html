@@ -174,9 +174,11 @@
   .faction-stats .stat-row { display: flex; justify-content: space-between; font-size: 13.5px; font-weight: 700; margin-bottom: 8px; }
   .faction-stats .stat-alliance { color: var(--alliance); }
   .faction-stats .stat-horde { color: var(--horde); }
+  .faction-stats .stat-neutral { color: var(--gold-bright); }
   .faction-stats .stat-bar { display: flex; height: 9px; border-radius: 999px; overflow: hidden; background: var(--bg); border: 1px solid var(--border); }
   .faction-stats .stat-bar-fill { height: 100%; transition: width 0.2s ease; }
   .faction-stats .stat-bar-fill.alliance { background: var(--alliance); }
+  .faction-stats .stat-bar-fill.neutral { background: var(--gold); }
   .faction-stats .stat-bar-fill.horde { background: var(--horde); }
   .faction-stats .stat-hint { margin-top: 6px; font-size: 11.5px; color: var(--text-dim); font-style: italic; }
   .roster-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
@@ -653,13 +655,12 @@
   function renderFactionStats() {
     var aligned = players.filter(function(p) { return p.faction === 'Альянс' || p.faction === 'Орда'; });
     var neutralCount = players.filter(function(p) { return p.faction === 'Без різниці'; }).length;
-    var allianceBase = aligned.filter(function(p) { return p.faction === 'Альянс'; }).length;
-    var hordeBase = aligned.filter(function(p) { return p.faction === 'Орда'; }).length;
-    var allianceCount = allianceBase + neutralCount;
-    var hordeCount = hordeBase + neutralCount;
-    var total = allianceCount + hordeCount;
-    var alliancePct = total ? (allianceCount / total * 100) : 50;
-    var hordePct = 100 - alliancePct;
+    var allianceCount = aligned.filter(function(p) { return p.faction === 'Альянс'; }).length;
+    var hordeCount = aligned.filter(function(p) { return p.faction === 'Орда'; }).length;
+    var total = allianceCount + neutralCount + hordeCount;
+    var alliancePct = total ? (allianceCount / total * 100) : 33.3;
+    var neutralPct = total ? (neutralCount / total * 100) : 33.3;
+    var hordePct = 100 - alliancePct - neutralPct;
     var firmCount = aligned.filter(function(p) { return p.principled; }).length;
     var flexibleCount = aligned.length - firmCount;
     var statsEl = document.getElementById('factionStats');
@@ -667,18 +668,15 @@
     statsEl.innerHTML =
       '<div class="stat-row">' +
         '<span class="stat-alliance">' + iconHtml('alliance') + ' Альянс: <strong>' + allianceCount + '</strong></span>' +
+        (neutralCount ? '<span class="stat-neutral">' + iconHtml('neutral') + ' <strong>' + neutralCount + '</strong></span>' : '') +
         '<span class="stat-horde">Орда: <strong>' + hordeCount + '</strong> ' + iconHtml('horde') + '</span>' +
       '</div>' +
       '<div class="stat-bar">' +
         '<div class="stat-bar-fill alliance" style="width:' + alliancePct + '%"></div>' +
+        '<div class="stat-bar-fill neutral" style="width:' + neutralPct + '%"></div>' +
         '<div class="stat-bar-fill horde" style="width:' + hordePct + '%"></div>' +
       '</div>' +
-      '<div class="stat-hint">' +
-        (neutralCount
-          ? 'Кожен гравець «Без різниці» (' + neutralCount + ') додає +1 і Альянсу, і Орді'
-          : 'Ніхто ще не обрав «Без різниці»') +
-        (aligned.length ? ' · 🤝 гнучких: ' + flexibleCount + ' · ⚔️ принципових: ' + firmCount : '') +
-      '</div>';
+      (aligned.length ? '<div class="stat-hint">🤝 гнучких: ' + flexibleCount + ' · ⚔️ принципових: ' + firmCount + '</div>' : '');
   }
 
   function renderRoster() {
