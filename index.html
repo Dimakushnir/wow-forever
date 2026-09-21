@@ -707,7 +707,7 @@
           : '<span class="agree-badge no" title="Готовий(а) змінити фракцію заради балансу">🤝 Ні</span>');
       return '<tr>' +
         '<td data-label="Нік"><strong>' + escapeHtml(p.nick) + '</strong></td>' +
-        '<td data-label="Фракція"><span class="pill ' + factionClass + '">' + factionIcon + ' ' + escapeHtml(p.faction) + '</span></td>' +
+        '<td data-label="Фракція"><span class="pill ' + factionClass + '" title="' + escapeHtml(p.faction) + '">' + factionIcon + '</span></td>' +
         '<td data-label="Принципово">' + principledCell + '</td>' +
         '<td data-label="Напрямок"><span class="pill ' + modeClass + '">' + escapeHtml(modeText) + '</span></td>' +
         '<td data-label="Клас">' + classCell + '</td>' +
