@@ -171,7 +171,9 @@
   .msg.err { background: rgba(192,69,61,0.15); color: #e79890; border: 1px solid rgba(192,69,61,0.4); }
   .msg.info { background: rgba(201,162,74,0.12); color: var(--gold-bright); border: 1px solid rgba(201,162,74,0.35); }
   .faction-stats { margin-bottom: 16px; }
-  .faction-stats .stat-row { display: flex; justify-content: space-between; font-size: 13.5px; font-weight: 700; margin-bottom: 8px; }
+  .faction-stats .stat-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 700; margin-bottom: 8px; }
+  .faction-stats .stat-neutral { text-align: center; justify-self: center; }
+  .faction-stats .stat-horde { text-align: right; justify-self: end; }
   .faction-stats .stat-alliance { color: var(--alliance); }
   .faction-stats .stat-horde { color: var(--horde); }
   .faction-stats .stat-neutral { color: var(--gold-bright); }
@@ -667,9 +669,9 @@
     if (!statsEl) return;
     statsEl.innerHTML =
       '<div class="stat-row">' +
-        '<span class="stat-alliance">' + iconHtml('alliance') + ' Альянс: <strong>' + allianceCount + '</strong></span>' +
-        (neutralCount ? '<span class="stat-neutral">' + iconHtml('neutral') + ' <strong>' + neutralCount + '</strong></span>' : '') +
-        '<span class="stat-horde">Орда: <strong>' + hordeCount + '</strong> ' + iconHtml('horde') + '</span>' +
+        '<span class="stat-alliance" style="grid-column:1">' + iconHtml('alliance') + ' Альянс: <strong>' + allianceCount + '</strong></span>' +
+        (neutralCount ? '<span class="stat-neutral" style="grid-column:2">' + iconHtml('neutral') + ' <strong>' + neutralCount + '</strong></span>' : '') +
+        '<span class="stat-horde" style="grid-column:3">Орда: <strong>' + hordeCount + '</strong> ' + iconHtml('horde') + '</span>' +
       '</div>' +
       '<div class="stat-bar">' +
         '<div class="stat-bar-fill alliance" style="width:' + alliancePct + '%"></div>' +
