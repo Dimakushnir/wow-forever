@@ -187,6 +187,15 @@
   .table-scroll { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
   table { width: 100%; border-collapse: collapse; min-width: 520px; font-size: 15px; }
   thead th { text-align: left; font-family: Georgia, serif; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--gold-bright); background: var(--bg); padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  thead th.sortable { cursor: pointer; user-select: none; }
+  thead th.sortable:hover { color: var(--gold); }
+  thead th.sortable .sort-arrow { display: inline-block; width: 10px; font-size: 10px; }
+  .sort-controls { display: none; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .sort-controls-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-dim); font-weight: 700; }
+  .sort-chip { border: 1px solid var(--border); background: var(--bg); color: var(--text-dim); border-radius: 999px; padding: 5px 12px; font-size: 12.5px; font-weight: 700; cursor: pointer; }
+  .sort-chip:hover { border-color: var(--gold); color: var(--text); }
+  .sort-chip.active { border-color: var(--gold); color: var(--gold-bright); }
+  .sort-chip .sort-arrow { display: inline-block; width: 10px; font-size: 10px; }
   tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text); white-space: nowrap; }
   tbody tr:last-child td { border-bottom: none; }
   tbody tr:nth-child(odd) { background: rgba(255,255,255,0.015); }
@@ -203,6 +212,7 @@
   .agree-badge.no { color: var(--pve); }
   .empty-row { text-align: center; color: var(--text-dim); padding: 22px 10px !important; font-style: italic; }
   @media (max-width: 640px) {
+    .sort-controls { display: flex; }
     .table-scroll { overflow-x: visible; border: none; }
     table { min-width: 0; border-collapse: separate; border-spacing: 0 10px; }
     thead { display: none; }
@@ -348,12 +358,17 @@
     <div style="height:14px"></div>
     <div class="faction-stats" id="factionStats"></div>
     <div class="field-hint" style="margin:0 0 12px">⚔️ Так — принципово хоче саме цю фракцію · 🤝 Ні — готов(а) змінити</div>
+    <div class="sort-controls" id="sortControls">
+      <span class="sort-controls-label">Сортувати:</span>
+      <button type="button" class="sort-chip" data-sort="nick">Нік<span class="sort-arrow"></span></button>
+      <button type="button" class="sort-chip" data-sort="faction">Фракція<span class="sort-arrow"></span></button>
+    </div>
     <div class="table-scroll">
       <table>
         <thead>
           <tr>
-            <th>Нік</th>
-            <th>Фракція</th>
+            <th class="sortable" data-sort="nick">Нік<span class="sort-arrow"></span></th>
+            <th class="sortable" data-sort="faction">Фракція<span class="sort-arrow"></span></th>
             <th>Принципово</th>
             <th>Напрямок</th>
             <th>Клас</th>
@@ -562,6 +577,46 @@
   });
 
   var players = [];
+  var sortState = { field: null, dir: 1 };
+  var FACTION_ORDER = { 'Альянс': 0, 'Орда': 1, 'Без різниці': 2 };
+
+  function sortedPlayers() {
+    if (sortState.field === 'nick') {
+      return players.slice().sort(function(a, b) {
+        return a.nick.localeCompare(b.nick, 'uk') * sortState.dir;
+      });
+    }
+    if (sortState.field === 'faction') {
+      return players.slice().sort(function(a, b) {
+        var diff = FACTION_ORDER[a.faction] - FACTION_ORDER[b.faction];
+        return (diff || a.nick.localeCompare(b.nick, 'uk')) * sortState.dir;
+      });
+    }
+    return players.slice().reverse();
+  }
+
+  function updateSortIndicators() {
+    document.querySelectorAll('[data-sort]').forEach(function(el) {
+      var arrow = el.querySelector('.sort-arrow');
+      var active = sortState.field === el.getAttribute('data-sort');
+      el.classList.toggle('active', active);
+      if (arrow) arrow.textContent = active ? (sortState.dir === 1 ? '▲' : '▼') : '';
+    });
+  }
+
+  function handleSortClick(field) {
+    if (sortState.field === field) {
+      sortState.dir = -sortState.dir;
+    } else {
+      sortState.field = field;
+      sortState.dir = 1;
+    }
+    renderRoster();
+  }
+
+  document.querySelectorAll('[data-sort]').forEach(function(el) {
+    el.addEventListener('click', function() { handleSortClick(this.getAttribute('data-sort')); });
+  });
 
   var form = document.getElementById('signupForm');
   var nickInput = document.getElementById('nickInput');
@@ -685,11 +740,12 @@
     var count = players.length;
     rosterCount.textContent = count + (count === 1 ? ' гравець' : ' гравців');
     renderFactionStats();
+    updateSortIndicators();
     if (!count) {
       rosterBody.innerHTML = '<tr><td class="empty-row" colspan="6">Поки що ніхто не зареєструвався — будь першим!</td></tr>';
       return;
     }
-    rosterBody.innerHTML = players.slice().reverse().map(function(p) {
+    rosterBody.innerHTML = sortedPlayers().map(function(p) {
       var factionClass = p.faction === 'Альянс' ? 'alliance' : (p.faction === 'Орда' ? 'horde' : 'neutral');
       var factionIcon = p.faction === 'Альянс' ? iconHtml('alliance') : (p.faction === 'Орда' ? iconHtml('horde') : iconHtml('neutral'));
       var MODE_ORDER = ['PvE', 'PvP'];
