@@ -126,8 +126,10 @@
   .mode-toggle { display: flex; align-items: center; justify-content: center; gap: 14px; }
   .mode-toggle-label { font-size: 13.5px; font-weight: 700; color: var(--text-dim); opacity: 0.55; transition: all 0.15s ease; }
   .mode-toggle-label[data-active-when="off"] { color: var(--text); opacity: 1; }
-  .mode-toggle:has(input:checked) .mode-toggle-label[data-active-when="off"] { color: var(--text-dim); opacity: 0.55; }
-  .mode-toggle:has(input:checked) .mode-toggle-label[data-active-when="on"] { color: var(--pvp); opacity: 1; }
+  .mode-toggle:has(input:checked) .mode-toggle-label[data-active-when="off"],
+  .mode-toggle:has(input:checked) .mode-toggle-label[data-active-when="on"] {
+    color: var(--pvp); opacity: 1; text-shadow: 0 0 10px rgba(201,122,61,0.7), 0 0 20px rgba(201,122,61,0.4);
+  }
   .switch { position: relative; display: inline-block; width: 64px; height: 32px; cursor: pointer; flex-shrink: 0; }
   .switch input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; margin: 0; }
   .switch-track { position: absolute; inset: 0; background: var(--bg); border: 1px solid var(--border); border-radius: 999px; transition: all 0.15s ease; }
@@ -173,7 +175,7 @@
   .faction-stats .stat-alliance { color: var(--alliance); display: inline-flex; align-items: center; gap: 6px; }
   .faction-stats .stat-horde { color: var(--horde); display: inline-flex; align-items: center; gap: 6px; }
   .faction-stats .stat-alliance img, .faction-stats .stat-horde img { width: 51px; height: 51px; }
-  .faction-stats .stat-bar { display: flex; height: 38px; border-radius: 999px; overflow: hidden; background: var(--bg); border: 1px solid var(--border); }
+  .faction-stats .stat-bar { display: flex; height: 32px; border-radius: 999px; overflow: hidden; background: var(--bg); border: 1px solid var(--border); }
   .faction-stats .stat-bar-fill { height: 100%; transition: width 0.2s ease; }
   .faction-stats .stat-bar-fill.alliance { background: var(--alliance); }
   .faction-stats .stat-bar-fill.horde { background: var(--horde); }
