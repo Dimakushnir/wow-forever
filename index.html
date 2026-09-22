@@ -183,8 +183,8 @@
   .faction-stats .stat-hint { margin-top: 6px; font-size: 11.5px; color: var(--text-dim); font-style: italic; }
   .roster-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .roster-count { font-size: 13px; color: var(--text-dim); font-weight: 600; }
-  .table-scroll { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
-  table { width: 100%; border-collapse: collapse; min-width: 520px; font-size: 15px; }
+  .table-scroll { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); width: fit-content; max-width: 100%; }
+  table { width: auto; border-collapse: collapse; min-width: 520px; font-size: 15px; }
   thead th { text-align: left; font-family: Georgia, serif; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--gold-bright); background: var(--bg); padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
   thead th.sortable { cursor: pointer; user-select: none; }
   thead th.sortable:hover { color: var(--gold); }
@@ -216,8 +216,8 @@
   .empty-row { text-align: center; color: var(--text-dim); padding: 22px 10px !important; font-style: italic; }
   @media (max-width: 640px) {
     .sort-controls { display: flex; }
-    .table-scroll { overflow-x: visible; border: none; }
-    table { min-width: 0; border-collapse: separate; border-spacing: 0 10px; }
+    .table-scroll { overflow-x: visible; border: none; width: 100%; }
+    table { width: 100%; min-width: 0; border-collapse: separate; border-spacing: 0 10px; }
     thead { display: none; }
     tbody tr { display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 4px 12px; }
     tbody tr:nth-child(odd) { background: var(--bg); }
