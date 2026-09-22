@@ -170,10 +170,11 @@
   .msg.err { background: rgba(192,69,61,0.15); color: #e79890; border: 1px solid rgba(192,69,61,0.4); }
   .msg.info { background: rgba(201,162,74,0.12); color: var(--gold-bright); border: 1px solid rgba(201,162,74,0.35); }
   .faction-stats { margin-bottom: 16px; }
-  .faction-stats .stat-row { position: relative; display: flex; justify-content: space-between; font-size: 13.5px; font-weight: 700; margin-bottom: 8px; }
-  .faction-stats .stat-neutral { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
-  .faction-stats .stat-alliance { color: var(--alliance); }
-  .faction-stats .stat-horde { color: var(--horde); }
+  .faction-stats .stat-row { position: relative; display: flex; align-items: center; justify-content: space-between; font-size: 13.5px; font-weight: 700; margin-bottom: 8px; }
+  .faction-stats .stat-neutral { position: absolute; top: 50%; transform: translate(-50%, -50%); white-space: nowrap; }
+  .faction-stats .stat-alliance { color: var(--alliance); display: inline-flex; align-items: center; gap: 6px; }
+  .faction-stats .stat-horde { color: var(--horde); display: inline-flex; align-items: center; gap: 6px; }
+  .faction-stats .stat-alliance img, .faction-stats .stat-horde img { width: 51px; height: 51px; }
   .faction-stats .stat-neutral { color: var(--gold-bright); }
   .faction-stats .stat-bar { display: flex; height: 54px; border-radius: 999px; overflow: hidden; background: var(--bg); border: 1px solid var(--border); }
   .faction-stats .stat-bar-fill { height: 100%; transition: width 0.2s ease; }
@@ -714,9 +715,9 @@
     if (!statsEl) return;
     statsEl.innerHTML =
       '<div class="stat-row">' +
-        '<span class="stat-alliance">' + iconHtml('alliance') + ' Альянс: <strong>' + allianceCount + '</strong></span>' +
+        '<span class="stat-alliance">' + iconHtml('alliance') + ' <strong>' + allianceCount + '</strong></span>' +
         (neutralCount ? '<span class="stat-neutral" style="left:' + neutralCenterPct + '%">' + iconHtml('neutral') + ' <strong>' + neutralCount + '</strong></span>' : '') +
-        '<span class="stat-horde">Орда: <strong>' + hordeCount + '</strong> ' + iconHtml('horde') + '</span>' +
+        '<span class="stat-horde"><strong>' + hordeCount + '</strong> ' + iconHtml('horde') + '</span>' +
       '</div>' +
       '<div class="stat-bar">' +
         '<div class="stat-bar-fill alliance" style="width:' + alliancePct + '%"></div>' +
