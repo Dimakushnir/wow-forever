@@ -233,8 +233,8 @@
     tbody td { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); white-space: normal; text-align: right; }
     tbody tr td:last-child { border-bottom: none; }
     tbody td::before { content: attr(data-label); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; color: var(--text-dim); text-align: left; }
-    tbody td[data-label=""]::before { content: none; }
-    tbody td[data-label=""] { justify-content: flex-end; }
+    tbody td[data-label=""] { display: none; }
+    tbody td[data-label="Клас"] { border-bottom: none; }
     .empty-row { display: block !important; text-align: center; }
     .empty-row::before { content: none; }
   }
@@ -268,7 +268,7 @@
   </div>
 
   <p class="purpose-note">
-    🎯 Мета — заздалегідь зрозуміти баланс фракцій (Альянс/Орда, з позначкою наскільки принципова позиція),
+    🎯 Мета — заздалегідь зрозуміти баланс фракцій (Альянс/Орда, з позначкою наскільки остаточна позиція),
     щоб у разі формування спільної гільдії склад був єдиним, а не розрізненим.
     Якщо гільдія складеться — орієнтир переважно на PvE, з можливістю разом виходити і в PvP.
     Клас(и) — для орієнтовного розуміння складу.
@@ -377,7 +377,7 @@
           <tr>
             <th class="sortable" data-sort="nick">Нік<span class="sort-arrow"></span></th>
             <th class="sortable" data-sort="faction">Фракція<span class="sort-arrow"></span></th>
-            <th>Принципово</th>
+            <th>Остаточно</th>
             <th>Напрямок</th>
             <th>Клас</th>
             <th></th>
@@ -412,11 +412,11 @@
 
 <div class="modal-overlay" id="principledAskModal" hidden>
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="principledAskTitle">
-    <h3 id="principledAskTitle">Це принципове рішення?</h3>
+    <h3 id="principledAskTitle">Це остаточне рішення?</h3>
     <p id="principledAskText"></p>
     <div class="modal-actions">
       <button type="button" class="modal-btn flex" id="principledNoBtn">🤝 Готовий(а) змінити</button>
-      <button type="button" class="modal-btn gold" id="principledYesBtn">⚔️ Так, принципово</button>
+      <button type="button" class="modal-btn gold" id="principledYesBtn">⚔️ Так, остаточно</button>
     </div>
   </div>
 </div>
@@ -556,7 +556,7 @@
     principledAskingFor = factionValue;
     var icon = factionValue === 'Альянс' ? '🔵' : '🔴';
     principledAskText.textContent =
-      'Ти обрав(ла) ' + icon + ' ' + factionValue + '. Це принципове рішення — важливо грати саме за цю фракцію, чи ти готовий(а) змінити її заради балансу команди? Твоя відповідь буде видно в таблиці.';
+      'Ти обрав(ла) ' + icon + ' ' + factionValue + '. Це остаточне рішення — важливо грати саме за цю фракцію, чи ти готовий(а) змінити її заради балансу команди? Твоя відповідь буде видно в таблиці.';
     principledAskModal.hidden = false;
   }
 
@@ -783,12 +783,12 @@
               '<span class="class-popover" hidden>' + classes.slice(1).map(classTag).join('') + '</span>' +
             '</span>';
       var principledCell = p.principled
-        ? '<span class="agree-badge yes" title="Принципово хоче грати за цю фракцію">⚔️ Так</span>'
+        ? '<span class="agree-badge yes" title="Остаточно хоче грати за цю фракцію">⚔️ Так</span>'
         : '<span class="agree-badge no" title="Готовий(а) змінити фракцію заради балансу">🤝 Ні</span>';
       return '<tr>' +
         '<td data-label="Нік"><strong>' + escapeHtml(p.nick) + '</strong></td>' +
         '<td data-label="Фракція"><span class="pill ' + factionClass + '" title="' + escapeHtml(p.faction) + '">' + factionIcon + '</span></td>' +
-        '<td data-label="Принципово">' + principledCell + '</td>' +
+        '<td data-label="Остаточно">' + principledCell + '</td>' +
         '<td data-label="Напрямок"><span class="pill ' + modeClass + '">' + escapeHtml(modeText) + '</span></td>' +
         '<td data-label="Клас">' + classCell + '</td>' +
         '<td data-label=""><button type="button" class="row-delete" data-nick="' + escapeHtml(p.nick) + '" title="Видалити (потрібен пароль адміна)">🗑️</button></td>' +
