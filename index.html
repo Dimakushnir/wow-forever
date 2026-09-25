@@ -783,10 +783,11 @@
               '<span class="class-popover" hidden>' + classes.slice(1).map(classTag).join('') + '</span>' +
             '</span>';
       var principledCell = p.principled
-        ? '<span class="agree-badge yes" title="Остаточно хоче грати за цю фракцію">⚔️ Так</span>'
-        : '<span class="agree-badge no" title="Готовий(а) змінити фракцію заради балансу">🤝 Ні</span>';
+        ? '<span class="agree-badge yes" title="Остаточно хоче грати за цю фракцію">Так</span>'
+        : '<span class="agree-badge no" title="Готовий(а) змінити фракцію заради балансу">Ні</span>';
+      var nickColor = classes.length ? (CLASS_COLORS[classes[0]] || 'var(--text)') : 'var(--text)';
       return '<tr>' +
-        '<td data-label="Нік"><strong>' + escapeHtml(p.nick) + '</strong></td>' +
+        '<td data-label="Нік"><strong style="color:' + nickColor + '">' + escapeHtml(p.nick) + '</strong></td>' +
         '<td data-label="Фракція"><span class="pill ' + factionClass + '" title="' + escapeHtml(p.faction) + '">' + factionIcon + '</span></td>' +
         '<td data-label="Остаточно">' + principledCell + '</td>' +
         '<td data-label="Напрямок"><span class="pill ' + modeClass + '">' + escapeHtml(modeText) + '</span></td>' +
