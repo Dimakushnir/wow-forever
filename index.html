@@ -216,7 +216,8 @@
   .class-popover {
     position: absolute; top: 100%; left: 0; margin-top: 6px; z-index: 30;
     background: linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2)); border: 1px solid var(--border);
-    border-radius: 10px; padding: 8px 10px; box-shadow: 0 10px 24px var(--shadow); white-space: nowrap;
+    border-radius: 10px; padding: 8px 12px; box-shadow: 0 10px 24px var(--shadow);
+    display: flex; flex-direction: column; gap: 4px; white-space: nowrap;
   }
   .agree-badge.yes { color: var(--gold-bright); }
   .agree-badge.no { color: var(--pve); }
@@ -778,7 +779,7 @@
           ? classTag(classes[0])
           : '<span class="class-wrap">' + classTag(classes[0]) +
               ' <button type="button" class="class-more" title="' + escapeHtml(classes.slice(1).join(', ')) + '">+' + (classes.length - 1) + '</button>' +
-              '<span class="class-popover" hidden>' + classes.map(classTag).join(', ') + '</span>' +
+              '<span class="class-popover" hidden>' + classes.map(classTag).join('') + '</span>' +
             '</span>';
       var principledCell = p.principled
         ? '<span class="agree-badge yes" title="Принципово хоче грати за цю фракцію">⚔️ Так</span>'
@@ -798,11 +799,11 @@
   var wrapEl = document.querySelector('.wrap');
   function syncWrapWidth() {
     if (window.innerWidth <= 640) { wrapEl.style.maxWidth = ''; return; }
-    var t = rosterBody.closest('table');
-    if (!t) return;
+    var scroll = document.querySelector('.table-scroll');
+    if (!scroll) return;
     requestAnimationFrame(function() {
-      var w = t.getBoundingClientRect().width;
-      if (w > 0) wrapEl.style.maxWidth = Math.ceil(w + 52) + 'px';
+      var w = scroll.getBoundingClientRect().width;
+      if (w > 0) wrapEl.style.maxWidth = Math.ceil(w + 56) + 'px';
     });
   }
 
