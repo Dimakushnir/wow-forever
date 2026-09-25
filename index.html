@@ -219,6 +219,7 @@
     border-radius: 10px; padding: 8px 12px; box-shadow: 0 10px 24px var(--shadow);
     display: flex; flex-direction: column; gap: 4px; white-space: nowrap;
   }
+  .class-popover[hidden] { display: none; }
   .agree-badge.yes { color: var(--gold-bright); }
   .agree-badge.no { color: var(--pve); }
   .empty-row { text-align: center; color: var(--text-dim); padding: 22px 10px !important; font-style: italic; }
@@ -801,6 +802,9 @@
     if (window.innerWidth <= 640) { wrapEl.style.maxWidth = ''; return; }
     var scroll = document.querySelector('.table-scroll');
     if (!scroll) return;
+    // Release any previous constraint first so the table can lay out at its
+    // true natural width — otherwise we'd just re-measure the clamped box.
+    wrapEl.style.maxWidth = '';
     requestAnimationFrame(function() {
       var w = scroll.getBoundingClientRect().width;
       if (w > 0) wrapEl.style.maxWidth = Math.ceil(w + 56) + 'px';
