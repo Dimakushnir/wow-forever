@@ -210,6 +210,7 @@
   .pill.both { color: var(--gold-bright); background: rgba(201,162,74,0.14); }
   .agree-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 13.5px; font-weight: 700; white-space: nowrap; }
   .class-tag { font-weight: 700; }
+  .class-more { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 999px; background: var(--bg); border: 1px solid var(--border); color: var(--text-dim); font-size: 11.5px; font-weight: 700; cursor: help; }
   .agree-badge.yes { color: var(--gold-bright); }
   .agree-badge.no { color: var(--pve); }
   .empty-row { text-align: center; color: var(--text-dim); padding: 22px 10px !important; font-style: italic; }
@@ -764,7 +765,9 @@
       var modeClass = modeArr.length > 1 ? 'both' : (modeArr[0] === 'PvP' ? 'pvp' : 'pve');
       var classes = Array.isArray(p.classes) ? p.classes : [];
       var classCell = classes.length
-        ? classes.map(classTag).join(', ')
+        ? classTag(classes[0]) + (classes.length > 1
+          ? ' <span class="class-more" title="' + escapeHtml(classes.slice(1).join(', ')) + '">+' + (classes.length - 1) + '</span>'
+          : '')
         : '<span style="color:var(--text-dim)">—</span>';
       var principledCell = p.principled
         ? '<span class="agree-badge yes" title="Принципово хоче грати за цю фракцію">⚔️ Так</span>'
