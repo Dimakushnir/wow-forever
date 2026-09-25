@@ -780,7 +780,7 @@
           ? classTag(classes[0])
           : '<span class="class-wrap">' + classTag(classes[0]) +
               ' <button type="button" class="class-more" title="' + escapeHtml(classes.slice(1).join(', ')) + '">+' + (classes.length - 1) + '</button>' +
-              '<span class="class-popover" hidden>' + classes.map(classTag).join('') + '</span>' +
+              '<span class="class-popover" hidden>' + classes.slice(1).map(classTag).join('') + '</span>' +
             '</span>';
       var principledCell = p.principled
         ? '<span class="agree-badge yes" title="Принципово хоче грати за цю фракцію">⚔️ Так</span>'
