@@ -761,6 +761,7 @@
       rosterBody.innerHTML = '<tr><td class="empty-row" colspan="6">' +
         (total ? 'Ніхто з обраної фракції поки не зареєстрований' : 'Поки що ніхто не зареєструвався — будь першим!') +
         '</td></tr>';
+      syncWrapWidth();
       return;
     }
     rosterBody.innerHTML = list.map(function(p) {
@@ -791,7 +792,25 @@
         '<td data-label=""><button type="button" class="row-delete" data-nick="' + escapeHtml(p.nick) + '" title="Видалити (потрібен пароль адміна)">🗑️</button></td>' +
         '</tr>';
     }).join('');
+    syncWrapWidth();
   }
+
+  var wrapEl = document.querySelector('.wrap');
+  function syncWrapWidth() {
+    if (window.innerWidth <= 640) { wrapEl.style.maxWidth = ''; return; }
+    var t = rosterBody.closest('table');
+    if (!t) return;
+    requestAnimationFrame(function() {
+      var w = t.getBoundingClientRect().width;
+      if (w > 0) wrapEl.style.maxWidth = Math.ceil(w + 52) + 'px';
+    });
+  }
+
+  var resizeTimer = null;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(syncWrapWidth, 150);
+  });
 
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
